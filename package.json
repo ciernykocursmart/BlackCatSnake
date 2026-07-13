@@ -9,7 +9,7 @@
     "build": "electron-builder"
   },
   "build": {
-    "appId": "59513Lukes.BlackCatSnakeGame",
+    "appId": "59513Lukes.BlackCatSnake",
     "productName": "Black Cat Snake",
     "win": {
       "target": [
@@ -19,7 +19,7 @@
     "appx": {
       "publisher": "CN=5B8EDAC0-7E93-4119-961E-9118180BF0FD",
       "publisherDisplayName": "Kocur",
-      "identityName": "59513Lukes.BlackCatSnakeGame",
+      "identityName": "59513Lukes.BlackCatSnake",
       "applicationId": "MeowCatSnake",
       "displayName": "Black Cat Snake"
     },
