@@ -330,6 +330,7 @@ function startNewGame() {
     lives = 3;
     isGameOver = false;
     isLevelCleared = false;
+    isPaused = false;
     
     document.getElementById('level-val').textContent = currentLevel;
     document.getElementById('score-val').textContent = score;
@@ -341,6 +342,7 @@ function startNewGame() {
 function initLevel() {
     catsEaten = 0;
     isLevelCleared = false;
+    isPaused = false;
     exitPortal = null;
     
     document.getElementById('eaten-val').textContent = catsEaten;
@@ -377,6 +379,18 @@ function stopGameTick() {
     if (gameTickInterval) {
         clearInterval(gameTickInterval);
         gameTickInterval = null;
+    }
+}
+
+function togglePause() {
+    if (isGameOver || isLevelCleared) return;
+    isPaused = !isPaused;
+    playClick();
+    if (isPaused) {
+        stopGameTick();
+        draw(); // Redraw immediately to display "PAUSED" overlay
+    } else {
+        startGameTick();
     }
 }
 
@@ -747,6 +761,21 @@ function draw() {
     ctx.moveTo(0, 3); ctx.lineTo(-1.5, 1); ctx.lineTo(1.5, 1); ctx.closePath(); ctx.fill();
     
     ctx.restore();
+    
+    // Draw pause overlay if game is paused
+    if (isPaused) {
+        ctx.fillStyle = 'rgba(13, 10, 27, 0.75)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#fee440';
+        ctx.font = 'bold 36px Fredoka';
+        ctx.textAlign = 'center';
+        ctx.fillText('PAUSED', canvas.width / 2, canvas.height / 2 - 10);
+        
+        ctx.fillStyle = '#f5f6fa';
+        ctx.font = '16px Fredoka';
+        ctx.fillText('Press P to Resume', canvas.width / 2, canvas.height / 2 + 25);
+    }
 }
 
 // 6. WinRT Store purchases logic & fallback
@@ -920,6 +949,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Prevent default scrolling keys
         if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].indexOf(key) > -1) {
             e.preventDefault();
+        }
+        
+        if (key === 'p' || key === 'P') {
+            e.preventDefault();
+            togglePause();
         }
         
         if ((key === 'ArrowUp' || key === 'w') && direction.y !== 1) {
