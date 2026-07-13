@@ -1,0 +1,37 @@
+{
+  "name": "black-cat-snake",
+  "version": "1.0.0",
+  "description": "Black Cat Snake: Meow Maze Chase - Cozy Snake Arcade Game",
+  "author": "Kocur",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "59513Lukes.BlackCatSnakeGame",
+    "productName": "Black Cat Snake",
+    "win": {
+      "target": [
+        "appx"
+      ]
+    },
+    "appx": {
+      "publisher": "CN=5B8EDAC0-7E93-4119-961E-9118180BF0FD",
+      "publisherDisplayName": "Kocur",
+      "identityName": "59513Lukes.BlackCatSnakeGame",
+      "applicationId": "MeowCatSnake",
+      "displayName": "Black Cat Snake"
+    },
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*"
+    ]
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.0"
+  }
+}

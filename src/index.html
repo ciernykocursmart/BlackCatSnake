@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Black Cat Snake 🐾🐍</title>
+    <!-- Google Playful Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="title-row">
+                <h1 class="bounce-title">Black Cat Snake <span class="cat-emoji">🐈‍⬛</span></h1>
+                <button id="pro-badge" class="pro-badge hidden">PRO VERSION 💎</button>
+            </div>
+            <p class="subtitle">Eat white cats, grow your tail, and dodge obstacles to escape!</p>
+        </header>
+
+        <!-- Main Panel -->
+        <div class="main-panel">
+            <!-- Left Side: Stats and Progress -->
+            <aside class="sidebar left-sidebar glass">
+                <h3>Stats</h3>
+                <div class="stat-row">
+                    <span class="stat-icon">🗺️</span>
+                    <span class="stat-lbl">Level:</span>
+                    <span id="level-val" class="stat-value">1</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-icon">❤️</span>
+                    <span class="stat-lbl">Lives:</span>
+                    <span id="lives-val" class="stat-value">3</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-icon">⭐</span>
+                    <span class="stat-lbl">Score:</span>
+                    <span id="score-val" class="stat-value">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-icon">🏆</span>
+                    <span class="stat-lbl">Best:</span>
+                    <span id="best-val" class="stat-value">0</span>
+                </div>
+                
+                <h3 class="goal-title">Level Goal</h3>
+                <div class="stat-row">
+                    <span class="stat-icon">🐱</span>
+                    <span class="stat-lbl">Eaten:</span>
+                    <span id="eaten-val" class="stat-value">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-icon">🎯</span>
+                    <span class="stat-lbl">Goal:</span>
+                    <span id="goal-val" class="stat-value">10</span>
+                </div>
+            </aside>
+
+            <!-- Center Viewport: HTML5 Canvas -->
+            <main class="game-canvas-area glass">
+                <canvas id="game-canvas" width="500" height="500"></canvas>
+            </main>
+
+            <!-- Right Side: Controls and Shop -->
+            <aside class="sidebar right-sidebar glass">
+                <h3>Controls</h3>
+                <button id="restart-btn" class="btn primary-btn">New Game 🔄</button>
+                <button id="sound-btn" class="btn icon-btn">🔊 Sound</button>
+                
+                <h3 class="shop-title">Shop</h3>
+                <button id="open-shop-btn" class="btn shop-btn">
+                    <span>💎 Unlock Levels 6-20</span>
+                </button>
+                <p class="shop-hint">Get 15 premium levels and remove demo limits for 1.49€!</p>
+            </aside>
+        </div>
+
+        <footer>
+            <p>Made with 💜 for cat lovers by Kocur</p>
+        </footer>
+    </div>
+
+    <!-- Shop Overlay Modal -->
+    <div id="shop-modal" class="modal-overlay hidden">
+        <div class="modal-content glass pop-in">
+            <div class="modal-emoji">💎🐈‍⬛💎</div>
+            <h2>Unlock Full Game!</h2>
+            <p>Unlock the complete cozy maze challenge and feed your cat through 20 levels.</p>
+            
+            <div class="pro-features">
+                <div class="feature-item">
+                    <span class="feature-bullet">✓</span>
+                    <span>Unlock all 15 Premium Level Maps (Level 6 to 20)</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-bullet">✓</span>
+                    <span>Access to faster speeds and special map puzzles</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-bullet">✓</span>
+                    <span>Support the developer Kocur!</span>
+                </div>
+            </div>
+
+            <div class="price-tag">1.49€</div>
+
+            <button id="purchase-btn" class="btn primary-btn large-btn">Purchase Now 💳</button>
+            <button id="close-shop-btn" class="btn secondary-btn large-btn">Maybe Later ↩️</button>
+        </div>
+    </div>
+
+    <!-- Game Over / Level Clear Screens -->
+    <div id="game-overlay" class="modal-overlay hidden">
+        <div id="overlay-content" class="modal-content glass pop-in">
+            <div id="overlay-emoji" class="modal-emoji">💀</div>
+            <h2 id="overlay-title">Game Over</h2>
+            <p id="overlay-desc">You crashed into a wall!</p>
+            <button id="overlay-action-btn" class="btn primary-btn large-btn">Try Again 🐾</button>
+        </div>
+    </div>
+
+    <!-- Canvas for Confetti Effects -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <script src="audio.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
