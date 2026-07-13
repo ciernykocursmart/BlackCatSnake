@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Black Cat Snake: Meow Maze Chase - Cozy Snake Arcade Game",
   "author": "Kocur",
-  "main": "src/main.js",
+  "main": "main.js",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder"
@@ -27,7 +27,12 @@
       "output": "dist"
     },
     "files": [
-      "src/**/*"
+      "index.html",
+      "game.js",
+      "audio.js",
+      "style.css",
+      "main.js",
+      "build/**/*"
     ]
   },
   "devDependencies": {
