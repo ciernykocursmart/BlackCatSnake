@@ -779,7 +779,7 @@ function draw() {
 }
 
 // 6. WinRT Store purchases logic & fallback
-function loadPurchaseState() {
+async function loadPurchaseState() {
     const saved = localStorage.getItem(PRO_VERSION_KEY);
     if (saved === 'true') {
         isProVersion = true;
@@ -787,6 +787,26 @@ function loadPurchaseState() {
         return;
     }
     
+    // Modern PWA Digital Goods API
+    if ('getDigitalGoodsService' in window) {
+        try {
+            const service = await window.getDigitalGoodsService('https://store.microsoft.com/billing');
+            if (service) {
+                const purchases = await service.listPurchases();
+                const hasLicense = purchases.some(p => p.itemId === "pro_upgrade");
+                if (hasLicense) {
+                    localStorage.setItem(PRO_VERSION_KEY, 'true');
+                    isProVersion = true;
+                    applyProUpgradeUI();
+                    return;
+                }
+            }
+        } catch (e) {
+            console.error("Error reading licenses from Digital Goods API:", e);
+        }
+    }
+    
+    // Legacy UWP AppX wrapper fallback
     if (typeof Windows !== 'undefined' && Windows.Services && Windows.Services.Store) {
         try {
             const storeContext = Windows.Services.Store.StoreContext.getDefault();
@@ -811,7 +831,50 @@ function applyProUpgradeUI() {
     if (hint) hint.textContent = 'Pro version active! levels 6-20 unlocked. Thank you for your support! 💎';
 }
 
-function simulatePurchase() {
+function handleSuccessfulPurchase() {
+    playVictory();
+    localStorage.setItem(PRO_VERSION_KEY, 'true');
+    isProVersion = true;
+    applyProUpgradeUI();
+    
+    document.getElementById('shop-modal').classList.add('hidden');
+    
+    // Unlock next level if sitting on Level 5 completion overlay
+    if (isLevelCleared && currentLevel === 5) {
+        document.getElementById('overlay-emoji').textContent = '🎉🐈‍⬛';
+        document.getElementById('overlay-title').textContent = 'Levels Unlocked!';
+        document.getElementById('overlay-desc').textContent = 'Pro Version active! levels 6-20 are now unlocked. Press Next Level to continue!';
+        document.getElementById('overlay-action-btn').textContent = 'Next Level ⏩';
+    }
+    
+    alert("Thank you! Full Game successfully unlocked. Levels 6-20 are now ready to play! 🐾💎");
+}
+
+async function simulatePurchase() {
+    // Modern PWA Payment Request API
+    if ('getDigitalGoodsService' in window) {
+        try {
+            const request = new PaymentRequest([{
+                supportedMethods: 'https://store.microsoft.com/billing',
+                data: { sku: 'pro_upgrade' }
+            }]);
+            
+            const paymentResponse = await request.show();
+            await paymentResponse.complete('success');
+            
+            handleSuccessfulPurchase();
+            return;
+        } catch (e) {
+            if (e.name === 'AbortError') {
+                alert("Purchase was cancelled by user.");
+            } else {
+                alert("Error connecting to payment gateway: " + e.message);
+            }
+            return;
+        }
+    }
+    
+    // Legacy UWP AppX wrapper fallback
     if (typeof Windows !== 'undefined' && Windows.Services && Windows.Services.Store) {
         try {
             const storeContext = Windows.Services.Store.StoreContext.getDefault();
@@ -819,22 +882,7 @@ function simulatePurchase() {
             
             storeContext.requestPurchaseAsync(storeId).then(result => {
                 if (result.status === Windows.Services.Store.StorePurchaseStatus.succeeded) {
-                    playVictory();
-                    localStorage.setItem(PRO_VERSION_KEY, 'true');
-                    isProVersion = true;
-                    applyProUpgradeUI();
-                    
-                    document.getElementById('shop-modal').classList.add('hidden');
-                    
-                    // Unlock next level if sitting on Level 5 completion overlay
-                    if (isLevelCleared && currentLevel === 5) {
-                        document.getElementById('overlay-emoji').textContent = '🎉🐈‍⬛';
-                        document.getElementById('overlay-title').textContent = 'Levels Unlocked!';
-                        document.getElementById('overlay-desc').textContent = 'Pro Version active! levels 6-20 are now unlocked. Press Next Level to continue!';
-                        document.getElementById('overlay-action-btn').textContent = 'Next Level ⏩';
-                    }
-                    
-                    alert("Thank you! Full Game successfully unlocked. Levels 6-20 are now ready to play! 🐾💎");
+                    handleSuccessfulPurchase();
                 } else {
                     alert("Purchase was cancelled or failed. Status: " + result.status);
                 }
@@ -844,21 +892,8 @@ function simulatePurchase() {
         }
     } else {
         // Local Mockup for Mac browser testing
-        playVictory();
-        localStorage.setItem(PRO_VERSION_KEY, 'true');
-        isProVersion = true;
-        applyProUpgradeUI();
-        
-        document.getElementById('shop-modal').classList.add('hidden');
-        
-        if (isLevelCleared && currentLevel === 5) {
-            document.getElementById('overlay-emoji').textContent = '🎉🐈‍⬛';
-            document.getElementById('overlay-title').textContent = 'Levels Unlocked!';
-            document.getElementById('overlay-desc').textContent = 'Pro Version active! levels 6-20 are now unlocked. Press Next Level to continue!';
-            document.getElementById('overlay-action-btn').textContent = 'Next Level ⏩';
-        }
-        
-        alert("Purchase simulated successfully! (Testing Mode on Mac) 🐾💎");
+        alert("This is a local mockup for testing outside of the Microsoft Store. Pro version will be unlocked for testing.");
+        handleSuccessfulPurchase();
     }
 }
 
