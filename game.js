@@ -1057,19 +1057,6 @@ document.addEventListener('DOMContentLoaded', () => {
         simulatePurchase();
     });
     
-    document.getElementById('reset-data-btn').addEventListener('click', () => {
-        localStorage.removeItem(PRO_VERSION_KEY);
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(registrations => {
-                for (let registration of registrations) {
-                    registration.unregister();
-                }
-            });
-        }
-        alert("Game data and cache reset successfully. Reloading game...");
-        window.location.reload(true);
-    });
-    
     // Unlock Audio Context on first interaction
     document.body.addEventListener('mousedown', () => {
         initAudio();

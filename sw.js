@@ -1,5 +1,5 @@
 // Black Cat Snake - PWA Service Worker
-const CACHE_NAME = 'cat-snake-v2';
+const CACHE_NAME = 'cat-snake-v3';
 const ASSETS = [
     './',
     './index.html',
